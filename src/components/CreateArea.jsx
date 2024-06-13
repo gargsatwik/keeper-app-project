@@ -31,7 +31,7 @@ function CreateArea(props) {
   }
 
   return (
-    <form className="create-note" onSubmit={handleClick}>
+    <form className="create-note">
       <input
         style={{ display: currentState ? null : "none" }}
         value={inputText}
@@ -46,7 +46,7 @@ function CreateArea(props) {
         rows={currentState ? 3 : 1}
       ></textarea>
       <Zoom in={currentState}>
-        <Fab>
+        <Fab onClick={handleClick}>
           <AddIcon />
         </Fab>
       </Zoom>
