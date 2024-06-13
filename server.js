@@ -23,10 +23,9 @@ const client = new MongoClient(DB_URI);
 await client.connect();
 const db = client.db("Keeper App");
 const credentials = db.collection("Crendentials");
-const notes = db.collection("Notes");
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.static("src"));
 
 app.use(
   session({
@@ -34,7 +33,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      maxAge: 1000 * 60,
+      maxAge: 1000 * 60 * 60,
     },
   })
 );
@@ -45,18 +44,18 @@ app.use(passport.session());
 app.get("/", (req, res) => {
   console.log(_dirname);
   if (req.isAuthenticated()) {
-    res.render(_dirname + "public/index.html");
+    res.render(_dirname + "/public/index.html");
   } else {
-    res.redirect("/login");
+    res.redirect("/register");
   }
 });
 
 app.get("/login", (req, res) => {
-  res.render(_dirname + "views/login.ejs");
+  res.render(_dirname + "/views/login.ejs");
 });
 
 app.get("/register", (req, res) => {
-  res.render(_dirname + "views/register.ejs");
+  res.render(_dirname + "/views/register.ejs");
 });
 
 app.get(
@@ -79,23 +78,6 @@ app.get("/logout", (req, res) => {
     if (err) console.log(err);
     res.redirect("/");
   });
-});
-
-app.get("/all-notes", async (req, res) => {
-  const all_notes = await notes.find();
-  res.send(all_notes);
-});
-
-app.post("/new-note", async (req, res) => {
-  const new_note = req.body;
-  await notes.insertOne(new_note);
-  res.sendStatus(200);
-});
-
-app.post("/delete-note", async (req, res) => {
-  const noteId = req.body;
-  await notes.deleteOne({ _id: noteId });
-  res.sendStatus(200);
 });
 
 app.post("/register", (req, res) => {
